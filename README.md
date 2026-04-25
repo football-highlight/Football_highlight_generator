@@ -24,7 +24,7 @@ This project was initially developed as part of a group academic project.
 
 **Primary Contributor:**
 
-* *[Arbind Yadav]* — onceived the research, implemented the multimodal fusion system, wrote the manuscript, implemented the 3D CNN architecture and conducted experiments.
+* *[Arbind Yadav]* — conceived the research, implemented the multimodal fusion system, wrote the manuscript, implemented the 3D CNN architecture and conducted experiments.
 
 **Other Contributors:**
 

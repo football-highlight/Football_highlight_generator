@@ -28,10 +28,12 @@ This project was initially developed as part of a group academic project.
 
 **Second Authors:**
 
-- _[Prajwol Ghimire]_ — annotated the dataset.
-- _[Chandan Prasad Sah]_ — performed statistical analysis.
+- _[Chandan Prasad Sah]_ — carried out statistical analysis and performed exploratory analysis on multimodal results.
+
+- _[Prajjwal Ghimire]_ —performed dataset annotation and conducted EDA on dataset structure and labeling
+
 - _[Siddhant Rai]_ —Primarily led audio signal processing and feature extraction workflows, integrating OpenAI Whisper for speech recognition, while conducting comprehensive EDA on the resulting audio feature sets.
-- _[Ashok G.M]_ — upervised the research and reviewed the manuscript.
+- _[Ashok G.M]_ — supervised the research and reviewed the manuscript.
 
 > Note: Contribution roles are defined based on actual involvement in development and implementation.
 

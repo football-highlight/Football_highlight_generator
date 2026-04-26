@@ -2,7 +2,7 @@
 
 ## 📌 Overview
 
-This project focuses on automatic generation of football match highlights using machine learning and video/audio processing techniques. The system detects key events such as goals, fouls, corners, and other significant moments to generate concise highlight clips.
+The project focuses on the automated generation of football match highlights using machine learning models combined with multimodal analysis of match video and commentary audio streams to detect and localize key events such as goals, fouls, corners, and other significant moments, enabling the extraction of concise highlight clips.
 
 ## 🎯 Objectives
 
@@ -20,7 +20,7 @@ The system uses:
 
 ## 👥 Authors
 
-This project was initially developed as part of a group academic project.
+The project was initially developed as part of a group academic project.
 
 **First Author:**
 
@@ -30,7 +30,7 @@ This project was initially developed as part of a group academic project.
 
 - _[Chandan Prasad Sah]_ — carried out statistical analysis and performed exploratory analysis on multimodal results.
 
-- _[Prajjwal Ghimire]_ —performed dataset annotation and conducted EDA on dataset structure and labeling
+- _[Prajjwal Ghimire]_ —performed dataset annotation and conducted EDA on dataset structure along with data labeling.
 
 - _[Siddhant Rai]_ — primarily led audio signal processing and feature extraction workflows, integrating OpenAI Whisper for speech recognition, while conducting comprehensive EDA on the resulting audio feature sets.
 
@@ -55,4 +55,3 @@ This project is licensed under the terms specified in the LICENSE file.
 
 For questions or collaboration inquiries, please contact:
 [multimodalfeaturedhighlightgen@gmail.com]
-

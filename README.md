@@ -6,32 +6,32 @@ This project focuses on automatic generation of football match highlights using 
 
 ## 🎯 Objectives
 
-* Detect important football events from match data
-* Combine multimodal inputs (video, audio, text)
-* Generate structured highlight outputs
+- Detect important football events from match data
+- Combine multimodal inputs (video, audio, text)
+- Generate structured highlight outputs
 
 ## 🧠 Methodology
 
 The system uses:
 
-* Video processing (frame extraction, temporal modeling)
-* Audio analysis (event classification using spectrograms)
-* Multimodal fusion techniques for event detection
+- Video processing (frame extraction, temporal modeling)
+- Audio analysis (event classification using spectrograms)
+- Multimodal fusion techniques for event detection
 
-## 👥 Authors 
+## 👥 Authors
 
 This project was initially developed as part of a group academic project.
 
 **First Author:**
 
-* *[Arbind Yadav]* — conceived the research, implemented the multimodal fusion system, wrote the manuscript, implemented the 3D CNN architecture and conducted experiments.
+- _[Arbind Yadav]_ — conceived the research, implemented the multimodal fusion system, wrote the manuscript, implemented the 3D CNN architecture and conducted experiments.
 
 **Second Authors:**
 
-* *[Prajwol Ghimire]* — annotated the dataset.
-* *[Chandan Prasad Sah]* — performed statistical analysis.
-* *[Siddhant Rai]* — performed audio processing and Whisper integration.
-* *[Ashok G.M]* — upervised the research and reviewed the manuscript.
+- _[Prajwol Ghimire]_ — annotated the dataset.
+- _[Chandan Prasad Sah]_ — performed statistical analysis.
+- _[Siddhant Rai]_ —Primarily led audio signal processing and feature extraction workflows, integrating OpenAI Whisper for speech recognition, while conducting comprehensive EDA on the resulting audio feature sets.
+- _[Ashok G.M]_ — upervised the research and reviewed the manuscript.
 
 > Note: Contribution roles are defined based on actual involvement in development and implementation.
 

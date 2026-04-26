@@ -18,15 +18,15 @@ The system uses:
 * Audio analysis (event classification using spectrograms)
 * Multimodal fusion techniques for event detection
 
-## 👥 Authors & Contributions
+## 👥 Authors 
 
 This project was initially developed as part of a group academic project.
 
-**Primary Contributor:**
+**First Author:**
 
 * *[Arbind Yadav]* — conceived the research, implemented the multimodal fusion system, wrote the manuscript, implemented the 3D CNN architecture and conducted experiments.
 
-**Other Contributors:**
+**Second Authors:**
 
 * *[Prajwol Ghimire]* — annotated the dataset.
 * *[Chandan Prasad Sah]* — performed statistical analysis.

@@ -32,7 +32,7 @@ This project was initially developed as part of a group academic project.
 
 - _[Prajjwal Ghimire]_ —performed dataset annotation and conducted EDA on dataset structure and labeling
 
-- _[Siddhant Rai]_ —Primarily led audio signal processing and feature extraction workflows, integrating OpenAI Whisper for speech recognition, while conducting comprehensive EDA on the resulting audio feature sets.
+- _[Siddhant Rai]_ — primarily led audio signal processing and feature extraction workflows, integrating OpenAI Whisper for speech recognition, while conducting comprehensive EDA on the resulting audio feature sets.
 
 - _[Ashok G.M]_ — supervised the research and reviewed the manuscript.
 
@@ -54,4 +54,5 @@ This project is licensed under the terms specified in the LICENSE file.
 ## 📬 Contact
 
 For questions or collaboration inquiries, please contact:
-[arrbean1810@gmail.com]
+[multimodalfeaturedhighlightgen@gmail.com]
+

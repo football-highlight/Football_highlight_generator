@@ -1,0 +1,80 @@
+# Multimodal Fusion Model Configuration
+model:
+  name: "football_multimodal_fusion"
+  version: "1.0"
+  description: "Multimodal fusion model for football event detection"
+  
+  components:
+    visual:
+      model: "3dcnn"
+      config: "config/model_configs/3dcnn_config.yaml"
+      output_dim: 512
+      trainable: true
+      
+    audio:
+      model: "audio_cnn"
+      config: "config/model_configs/audio_config.yaml"
+      output_dim: 128
+      trainable: true
+      
+  fusion:
+    method: "attention"
+    
+    attention:
+      type: "multi_head"
+      heads: 8
+      dropout: 0.1
+      hidden_dim: 256
+      
+    cross_attention:
+      enabled: true
+      layers: 2
+      residual: true
+      
+    late_fusion:
+      layers: [256, 128]
+      dropout: 0.3
+      activation: "relu"
+      
+  classifier:
+    layers: [128, 64]
+    dropout: 0.5
+    activation: "relu"
+    num_classes: 10
+    
+  training:
+    strategy: "joint_training"
+    
+    stages:
+      - name: "warmup"
+        epochs: 10
+        train_components: ["visual", "audio"]
+        learning_rate: 0.0001
+        
+      - name: "fusion_training"
+        epochs: 30
+        train_components: ["all"]
+        learning_rate: 0.00005
+        
+      - name: "fine_tuning"
+        epochs: 10
+        train_components: ["classifier"]
+        learning_rate: 0.00001
+        
+    loss:
+      main: "cross_entropy"
+      auxiliary: ["contrastive", "reconstruction"]
+      weights: [1.0, 0.1, 0.1]
+      
+  inference:
+    modality_weights:
+      visual: 0.6
+      audio: 0.4
+      
+    confidence_calibration:
+      enabled: true
+      temperature: 1.0
+      
+    ensemble:
+      enabled: true
+      methods: ["average", "max", "product"]

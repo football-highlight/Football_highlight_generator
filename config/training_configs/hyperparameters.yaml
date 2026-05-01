@@ -1,0 +1,68 @@
+# Hyperparameter Search Configuration
+search:
+  method: "random"  # random, grid, bayesian
+  n_trials: 50
+  timeout: 86400  # 24 hours in seconds
+  
+  space:
+    learning_rate:
+      type: "log_uniform"
+      low: 1e-5
+      high: 1e-3
+      
+    batch_size:
+      type: "categorical"
+      values: [4, 8, 16, 32]
+      
+    dropout_rate:
+      type: "uniform"
+      low: 0.2
+      high: 0.6
+      
+    hidden_size:
+      type: "categorical"
+      values: [128, 256, 512]
+      
+    num_layers:
+      type: "int_uniform"
+      low: 1
+      high: 4
+      
+    weight_decay:
+      type: "log_uniform"
+      low: 1e-6
+      high: 1e-3
+      
+    optimizer:
+      type: "categorical"
+      values: ["adam", "adamw", "sgd"]
+      
+    scheduler:
+      type: "categorical"
+      values: ["cosine", "reduce_on_plateau", "step"]
+      
+  constraints:
+    - name: "memory_constraint"
+      condition: "batch_size * hidden_size <= 8192"
+      
+    - name: "learning_rate_constraint"
+      condition: "learning_rate >= 1e-5 and learning_rate <= 1e-2"
+      
+  early_stopping:
+    enabled: true
+    patience: 5
+    min_delta: 0.001
+    
+  parallel:
+    enabled: true
+    n_jobs: 2
+    
+  output:
+    save_all_trials: true
+    save_best_config: true
+    generate_report: true
+    
+  metrics:
+    primary: "val_accuracy"
+    secondary: ["val_f1_score", "val_loss"]
+    direction: "maximize"  # maximize or minimize

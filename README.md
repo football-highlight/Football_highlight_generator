@@ -54,4 +54,4 @@ This project is licensed under the terms specified in the LICENSE file.
 ## 📬 Contact
 
 For questions or collaboration inquiries, please contact:
-[multimodalfeaturedhighlightgen@gmail.com]
+[arrbean1810@gmail.com]

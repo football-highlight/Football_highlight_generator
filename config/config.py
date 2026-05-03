@@ -98,6 +98,8 @@ class EventConfig:
     MAX_HIGHLIGHTS_DURATION: int = 600  # Maximum highlights duration in seconds (10 minutes)
     MIN_HIGHLIGHT_DURATION: int = 3  # Minimum highlight clip duration
     MAX_HIGHLIGHT_DURATION: int = 30  # Maximum highlight clip duration
+    
+    Merge_Window: float = 2.0
 
 # Path configuration
 @dataclass

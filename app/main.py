@@ -9,6 +9,15 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 import shutil
 import os
+
+# ===== ADD THIS SECTION FOR LARGE FILE UPLOADS (800 MB) =====
+from starlette.formparsers import MultiPartParser
+
+# Increase upload limits to 800 MB (800 * 1024 * 1024 = 838,860,800 bytes)
+MultiPartParser.max_file_size = 800 * 1024 * 1024  # 800 MB
+MultiPartParser.max_part_size = 800 * 1024 * 1024  # 800 MB
+# ============================================================
+
 os.environ["IMAGEMAGICK_BINARY"] = r"E:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe"
 from pathlib import Path
 from typing import List, Optional
@@ -16,6 +25,7 @@ import json
 import asyncio
 from datetime import datetime
 import logging
+import traceback
 
 from src.main_pipeline import FootballHighlightsPipeline
 from config.config import config
@@ -120,7 +130,10 @@ async def upload_video(
     file: UploadFile = File(...),
     metadata: Optional[str] = None
 ):
-    """Upload a video file for processing"""
+    """Upload a video file for processing - Supports up to 800 MB"""
+    
+    # 800 MB limit
+    MAX_FILE_SIZE = 800 * 1024 * 1024  # 838,860,800 bytes
     
     if not file.content_type.startswith("video/"):
         raise HTTPException(400, "File must be a video")
@@ -132,13 +145,34 @@ async def upload_video(
     # Generate unique filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     original_filename = Path(file.filename).stem
-    safe_filename = f"{timestamp}_{original_filename}.mp4"
+    # Clean filename for Windows
+    safe_original = "".join(c for c in original_filename if c.isalnum() or c in '._- ')[:50]
+    safe_filename = f"{timestamp}_{safe_original}.mp4"
     file_path = upload_dir / safe_filename
     
     try:
-        # Save uploaded file
+        # Read and write in chunks for large files
+        file_size = 0
+        chunk_size = 5 * 1024 * 1024  # 5 MB chunks for better performance
+        
         with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                file_size += len(chunk)
+                
+                # Check size limit
+                if file_size > MAX_FILE_SIZE:
+                    buffer.close()
+                    file_path.unlink()  # Delete partial file
+                    raise HTTPException(
+                        413, 
+                        f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)} MB. "
+                        f"Your file is {file_size // (1024*1024)} MB"
+                    )
+                
+                buffer.write(chunk)
         
         # Parse metadata if provided
         file_metadata = {}
@@ -148,23 +182,31 @@ async def upload_video(
             except:
                 file_metadata = {"raw_metadata": metadata}
         
+        # Log successful upload
+        file_size_mb = file_path.stat().st_size / (1024 * 1024)
+        logger.info(f"✅ Video uploaded: {safe_filename} ({file_size_mb:.2f} MB)")
+        
         # Create response
         response = {
             "status": "success",
             "filename": safe_filename,
             "original_filename": file.filename,
             "path": str(file_path),
-            "size": file_path.stat().st_size,
+            "size_bytes": file_path.stat().st_size,
+            "size_mb": round(file_size_mb, 2),
             "metadata": file_metadata,
-            "message": "Video uploaded successfully"
+            "message": f"Video uploaded successfully ({file_size_mb:.1f} MB)"
         }
-        
-        logger.info(f"Video uploaded: {safe_filename} ({file_path.stat().st_size} bytes)")
         
         return JSONResponse(content=response, status_code=201)
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
+        # Clean up partial file
+        if file_path.exists():
+            file_path.unlink()
         raise HTTPException(500, f"Error saving file: {str(e)}")
 
 @app.post("/api/process")
@@ -235,7 +277,8 @@ async def process_video(
         "end_time": None,
         "progress": 0,
         "error": None,
-        "result": None
+        "result": None,
+        "status_message": "Job created"
     }
     
     # Start processing in background
@@ -260,12 +303,35 @@ async def process_video(
     
     return response
 
+def run_pipeline_with_progress(process_video_func, video_path: str, output_dir: str, job: dict):
+    """Run pipeline with progress tracking"""
+    try:
+        # Update progress at different stages
+        job["progress"] = 10
+        job["status_message"] = "Initializing video processing..."
+        
+        # Run the pipeline
+        result = process_video_func(video_path, output_dir)
+        
+        # Update progress for completion
+        job["progress"] = 90
+        job["status_message"] = "Finalizing results..."
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Pipeline execution error: {e}")
+        logger.error(traceback.format_exc())
+        raise
+
 async def process_video_background(job_id: str, video_path: str, output_dir: str, generate_highlights: bool):
     """Background task for video processing"""
     
     job = processing_jobs[job_id]
     job["status"] = JobStatus.PROCESSING
     job["start_time"] = datetime.now().isoformat()
+    job["progress"] = 5
+    job["status_message"] = "Starting processing..."
     
     try:
         # Check if pipeline is available
@@ -277,29 +343,35 @@ async def process_video_background(job_id: str, video_path: str, output_dir: str
         
         # Update progress
         job["progress"] = 10
+        job["status_message"] = "Processing video clips and audio..."
         
-        # Run pipeline
+        # Run pipeline with progress tracking
         result = await asyncio.to_thread(
+            run_pipeline_with_progress,
             pipeline.process_video,
             video_path,
-            output_dir
+            output_dir,
+            job
         )
         
         # Update job status
         job["status"] = JobStatus.COMPLETED
         job["end_time"] = datetime.now().isoformat()
         job["progress"] = 100
+        job["status_message"] = "Processing completed successfully!"
         job["result"] = result
         
-        logger.info(f"Completed processing job {job_id}")
+        logger.info(f"✅ Completed processing job {job_id}")
         
     except Exception as e:
         # Update job status with error
         job["status"] = JobStatus.FAILED
         job["end_time"] = datetime.now().isoformat()
         job["error"] = str(e)
+        job["status_message"] = f"Failed: {str(e)[:100]}"
         
-        logger.error(f"Failed processing job {job_id}: {e}")
+        logger.error(f"❌ Failed processing job {job_id}: {e}")
+        logger.error(traceback.format_exc())
 
 @app.get("/api/status/{job_id}")
 async def get_status(job_id: str):
@@ -326,7 +398,8 @@ async def get_status(job_id: str):
         "start_time": job["start_time"],
         "end_time": job["end_time"],
         "processing_time": processing_time,
-        "error": job["error"]
+        "error": job["error"],
+        "status_message": job.get("status_message", "")
     }
     
     # Add result if available
@@ -358,7 +431,8 @@ async def list_jobs(limit: int = 10, status: Optional[str] = None):
             "status": job["status"],
             "video_path": job["video_path"],
             "progress": job["progress"],
-            "start_time": job["start_time"]
+            "start_time": job["start_time"],
+            "status_message": job.get("status_message", "")
         })
     
     return {
@@ -413,6 +487,7 @@ async def list_videos(limit: int = 20):
             "filename": video_file.name,
             "path": str(video_file),
             "size": video_file.stat().st_size,
+            "size_mb": round(video_file.stat().st_size / (1024 * 1024), 2),
             "modified": video_file.stat().st_mtime
         })
     
@@ -509,9 +584,10 @@ async def http_exception_handler(request, exc):
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
     logger.error(f"Unhandled exception: {exc}")
+    logger.error(traceback.format_exc())
     return JSONResponse(
         status_code=500,
-        content={"error": "Internal server error"}
+        content={"error": "Internal server error", "detail": str(exc)}
     )
 
 if __name__ == "__main__":
@@ -520,5 +596,7 @@ if __name__ == "__main__":
         host=config.APP.API_HOST,
         port=config.APP.API_PORT,
         reload=config.APP.API_RELOAD,
-        workers=config.APP.API_WORKERS
+        workers=config.APP.API_WORKERS,
+        timeout_keep_alive=600,  # 10 minutes for long uploads/processing
+        limit_max_requests=1000
     )

@@ -1,0 +1,73 @@
+# Audio Model Configuration
+model:
+  name: "football_audio_cnn"
+  version: "1.0"
+  description: "CNN for audio feature processing in football matches"
+  
+  input:
+    sample_rate: 16000
+    n_mfcc: 13
+    hop_length: 512
+    n_fft: 2048
+    shape: [13, 100]  # MFCC coefficients x time frames
+    
+  architecture:
+    type: "cnn"
+    
+    convolutional_layers:
+      - filters: 32
+        kernel_size: [3, 3]
+        stride: [1, 1]
+        padding: [1, 1]
+        activation: "relu"
+        pooling: "max"
+        pool_size: [2, 2]
+        
+      - filters: 64
+        kernel_size: [3, 3]
+        stride: [1, 1]
+        padding: [1, 1]
+        activation: "relu"
+        pooling: "max"
+        pool_size: [2, 2]
+        
+      - filters: 128
+        kernel_size: [3, 3]
+        stride: [1, 1]
+        padding: [1, 1]
+        activation: "relu"
+        pooling: "global_avg"
+        
+    fully_connected:
+      layers: [256, 128]
+      dropout: 0.5
+      activation: "relu"
+      num_classes: 10
+      
+  feature_extraction:
+    mfcc: true
+    chroma: true
+    mel_spectrogram: true
+    spectral_contrast: true
+    tonnetz: false
+    
+  training:
+    optimizer:
+      type: "adam"
+      learning_rate: 0.001
+      
+    augmentation:
+      audio:
+        noise_injection: true
+        noise_level: 0.005
+        time_shift: true
+        max_shift: 0.2
+        pitch_shift: true
+        n_steps: [-2, 2]
+        time_stretch: true
+        rates: [0.8, 1.2]
+        
+  inference:
+    confidence_threshold: 0.7
+    use_whisper: true
+    whisper_model: "base"

@@ -1,0 +1,77 @@
+# 3D CNN Model Configuration
+model:
+  name: "football_3dcnn"
+  version: "1.0"
+  description: "3D CNN for football event detection"
+  
+  input:
+    frames: 16
+    height: 224
+    width: 224
+    channels: 3
+    
+  architecture:
+    backbone: "r3d_18"
+    pretrained: true
+    freeze_backbone: false
+    
+    layers:
+      conv1:
+        out_channels: 64
+        kernel_size: [3, 7, 7]
+        stride: [1, 2, 2]
+        padding: [1, 3, 3]
+        
+      pool1:
+        kernel_size: [1, 3, 3]
+        stride: [1, 2, 2]
+        padding: [0, 1, 1]
+        
+    attention:
+      enabled: true
+      type: "self_attention"
+      heads: 8
+      dropout: 0.1
+      
+    classifier:
+      layers: [512, 256, 128]
+      dropout: 0.5
+      activation: "relu"
+      num_classes: 10
+      
+  training:
+    optimizer:
+      type: "adamw"
+      learning_rate: 0.0001
+      weight_decay: 0.0001
+      betas: [0.9, 0.999]
+      
+    scheduler:
+      type: "cosine"
+      warmup_epochs: 5
+      min_lr: 1e-6
+      
+    augmentation:
+      video:
+        random_crop: true
+        crop_size: [224, 224]
+        horizontal_flip: true
+        probability: 0.5
+        color_jitter:
+          brightness: 0.2
+          contrast: 0.2
+          saturation: 0.2
+          hue: 0.1
+        rotation: 10
+        time_jitter: 2
+        
+  inference:
+    confidence_threshold: 0.7
+    top_k_predictions: 3
+    temporal_smoothing: true
+    smoothing_window: 5
+    
+  deployment:
+    format: "torchscript"
+    optimize_for: "inference"
+    quantize: false

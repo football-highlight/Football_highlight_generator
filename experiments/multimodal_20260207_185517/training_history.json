@@ -1,0 +1,112 @@
+{
+  "train": {
+    "loss": [
+      0.4242039473348425,
+      0.21574845750286592,
+      0.21618760473800983,
+      0.2131086084961258,
+      0.2179095820566408,
+      0.20177763962077305,
+      0.20805684632615618
+    ],
+    "accuracy": [
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039
+    ],
+    "precision": [
+      0.9325499807766244,
+      0.9325499807766244,
+      0.9325499807766244,
+      0.9325499807766244,
+      0.9325499807766244,
+      0.9325499807766244,
+      0.9325499807766244
+    ],
+    "recall": [
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039,
+      0.9656862745098039
+    ],
+    "f1": [
+      0.9488289081218522,
+      0.9488289081218522,
+      0.9488289081218522,
+      0.9488289081218522,
+      0.9488289081218522,
+      0.9488289081218522,
+      0.9488289081218522
+    ]
+  },
+  "val": {
+    "loss": [
+      0.2121727894568308,
+      0.20584206725470722,
+      0.20603711414150894,
+      0.2282098746138879,
+      0.22361276123873805,
+      0.2214942987722514,
+      0.21063090629071335
+    ],
+    "accuracy": [
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909
+    ],
+    "precision": [
+      0.9329803719008265,
+      0.9329803719008265,
+      0.9329803719008265,
+      0.9329803719008265,
+      0.9329803719008265,
+      0.9329803719008265,
+      0.9329803719008265
+    ],
+    "recall": [
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909,
+      0.9659090909090909
+    ],
+    "f1": [
+      0.9491592222806094,
+      0.9491592222806094,
+      0.9491592222806094,
+      0.9491592222806094,
+      0.9491592222806094,
+      0.9491592222806094,
+      0.9491592222806094
+    ]
+  },
+  "best_epoch": 2,
+  "best_metrics": {
+    "loss": 0.20584206725470722,
+    "accuracy": 0.9659090909090909,
+    "precision": 0.9329803719008265,
+    "recall": 0.9659090909090909,
+    "f1": 0.9491592222806094,
+    "auc_roc": 0.0
+  },
+  "config": {
+    "VIDEO": "VideoConfig(FRAME_RATE=25, FRAME_WIDTH=160, FRAME_HEIGHT=90, CLIP_DURATION=1, CLIP_BUFFER_BEFORE=2, CLIP_BUFFER_AFTER=5)",
+    "AUDIO": "AudioConfig(SAMPLE_RATE=16000, LANGUAGE='en', WHISPER_MODEL='base', MFCC_N_COEFFS=13, KEYWORD_BUFFER_BEFORE=5, KEYWORD_BUFFER_AFTER=10)",
+    "MODEL": "ModelConfig(CNN_INPUT_SHAPE=(16, 90, 160, 3), CNN_BATCH_SIZE=2, CNN_LEARNING_RATE=0.001, CNN_DROPOUT_RATE=0.3, NUM_EPOCHS=10, PATIENCE=5, MIN_DELTA=0.001, OPTIMIZER='adam', WEIGHT_DECAY=1e-05, SCHEDULER='reduce_on_plateau', GRADIENT_CLIP=1.0)",
+    "EVENT": "EventConfig(KEYWORDS=['goal', 'red card', 'yellow card', 'foul', 'penalty', 'free kick', 'corner', 'offside', 'save', 'miss'], CONFIDENCE_THRESHOLD=0.7)",
+    "PATH": "PathConfig(PROJECT_ROOT=WindowsPath('E:/football-highlights-system'), RAW_VIDEO_DIR=WindowsPath('E:/football-highlights-system/data/raw_videos'), PROCESSED_VIDEO_DIR=WindowsPath('E:/football-highlights-system/data/processed_videos'), HIGHLIGHTS_DIR=WindowsPath('E:/football-highlights-system/data/highlights'), ANNOTATIONS_DIR=WindowsPath('E:/football-highlights-system/data/annotations'), DATASETS_DIR=WindowsPath('E:/football-highlights-system/data/datasets'), MODEL_DIR=WindowsPath('E:/football-highlights-system/models'), DEPLOYMENT_DIR=WindowsPath('E:/football-highlights-system/models/deployment'), EXPERIMENTS_DIR=WindowsPath('E:/football-highlights-system/experiments'), LOGS_DIR=WindowsPath('E:/football-highlights-system/logs'), TEMP_DIR=WindowsPath('E:/football-highlights-system/temp'))"
+  }
+}

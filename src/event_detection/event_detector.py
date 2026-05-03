@@ -276,6 +276,7 @@ class EventDetector:
         current_event = events[0]
         
         for next_event in events[1:]:
+            merge_window = getattr(self.config.EVENT, 'MERGE_WINDOW', 2.0)
             # Check if events overlap or are close
             events_overlap = (
                 next_event.start_time <= current_event.end_time + self.config.EVENT.MERGE_WINDOW

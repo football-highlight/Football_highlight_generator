@@ -112,7 +112,7 @@ API_BASE_URL = "http://localhost:8000/api"
 def check_api_health():
     """Check if API is running"""
     try:
-        response = requests.get(f"{API_BASE_URL}/health", timeout=5)
+        response = requests.get(f"{API_BASE_URL}/health", timeout=10)
         if response.status_code == 200:
             return True
         else:
@@ -213,7 +213,7 @@ def start_processing(filename=None, video_path=None, generate_highlights=True):
 def get_job_status(job_id):
     """Get job status"""
     try:
-        response = requests.get(f"{API_BASE_URL}/status/{job_id}", timeout=5)
+        response = requests.get(f"{API_BASE_URL}/status/{job_id}", timeout=60)
         if response.status_code == 200:
             return response.json()
         else:

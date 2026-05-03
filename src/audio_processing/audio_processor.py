@@ -51,7 +51,7 @@ class AudioProcessor:
         
         # Load Whisper model
         try:
-            self.whisper_model = whisper.load_model(self.config.WHISPER_MODEL)
+            self.whisper_model = whisper.load_model("tiny")
             logger.info(f"Loaded Whisper model: {self.config.WHISPER_MODEL}")
         except Exception as e:
             logger.warning(f"Could not load Whisper model: {e}")
